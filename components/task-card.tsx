@@ -3,19 +3,32 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { PriorityBadge } from '@/components/priority-badge';
 import { useTheme } from '@/hooks/use-theme';
-import { projectById } from '@/lib/sample-data';
-import type { Task } from '@/lib/types';
+import type { Priority } from '@/lib/types';
 
 interface Props {
-  task: Task;
+  title: string;
+  priority: Priority;
+  done: boolean;
+  projectName?: string;
+  projectColor?: string;
+  dueLabel?: string;
+  overdue?: boolean;
   onPress?: () => void;
   onToggle?: () => void;
 }
 
-export function TaskCard({ task, onPress, onToggle }: Props) {
+export function TaskCard({
+  title,
+  priority,
+  done,
+  projectName,
+  projectColor,
+  dueLabel,
+  overdue,
+  onPress,
+  onToggle,
+}: Props) {
   const theme = useTheme();
-  const project = projectById(task.projectId);
-  const done = task.status === 'done';
 
   return (
     <Pressable
@@ -42,26 +55,20 @@ export function TaskCard({ task, onPress, onToggle }: Props) {
             { color: done ? theme.textSecondary : theme.textPrimary },
             done && styles.struck,
           ]}>
-          {task.title}
+          {title}
         </Text>
 
         <View style={styles.meta}>
-          <PriorityBadge priority={task.priority} />
-          {project && (
+          <PriorityBadge priority={priority} />
+          {projectName && (
             <View style={styles.project}>
-              <View style={[styles.projectDot, { backgroundColor: project.color }]} />
-              <Text style={[styles.projectName, { color: theme.textSecondary }]}>
-                {project.name}
-              </Text>
+              <View style={[styles.projectDot, { backgroundColor: projectColor ?? theme.textSecondary }]} />
+              <Text style={[styles.projectName, { color: theme.textSecondary }]}>{projectName}</Text>
             </View>
           )}
-          {task.dueLabel && (
-            <Text
-              style={[
-                styles.due,
-                { color: task.overdue ? theme.danger : theme.textSecondary },
-              ]}>
-              {task.dueLabel}
+          {dueLabel && (
+            <Text style={[styles.due, { color: overdue ? theme.danger : theme.textSecondary }]}>
+              {dueLabel}
             </Text>
           )}
         </View>

@@ -2,25 +2,26 @@ import { Ionicons } from '@expo/vector-icons';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { useTheme } from '@/hooks/use-theme';
-import type { Project } from '@/lib/types';
 
 interface Props {
-  project: Project;
+  name: string;
+  color: string;
   taskCount: number;
+  doneCount?: number;
   onPress?: () => void;
 }
 
-export function ProjectCard({ project, taskCount, onPress }: Props) {
+export function ProjectCard({ name, color, taskCount, doneCount, onPress }: Props) {
   const theme = useTheme();
   return (
     <Pressable
       onPress={onPress}
       style={[styles.card, { backgroundColor: theme.surface, borderColor: theme.border }]}>
-      <View style={[styles.dot, { backgroundColor: project.color }]} />
+      <View style={[styles.dot, { backgroundColor: color }]} />
       <View style={styles.body}>
-        <Text style={[styles.name, { color: theme.textPrimary }]}>{project.name}</Text>
+        <Text style={[styles.name, { color: theme.textPrimary }]}>{name}</Text>
         <Text style={[styles.count, { color: theme.textSecondary }]}>
-          {taskCount} {taskCount === 1 ? 'task' : 'tasks'}
+          {doneCount !== undefined ? `${doneCount}/${taskCount} done` : `${taskCount} ${taskCount === 1 ? 'task' : 'tasks'}`}
         </Text>
       </View>
       <Ionicons name="chevron-forward" size={18} color={theme.textSecondary} />

@@ -3,32 +3,42 @@
 This file updates after every session. Always read this first.
 
 ## Current Phase
-🚧 Setup & Foundation
+✅ Backend live + wired — tsc + eslint clean. Ready to run on device.
 
-## In Progress
-* Backend wiring: Convex (schema + functions) + Clerk auth — needs Ajay's accounts/keys
+## Setup Done (Ajay)
+* Convex deployment: `festive-dolphin-36` (npx convex dev running, functions + cron deployed)
+* Clerk app created; publishable key in .env.local; JWT template "convex"; issuer
+  `equal-seal-6.clerk.accounts.dev`; CLERK_JWT_ISSUER_DOMAIN set in Convex dashboard
+* Convex codegen produced typed api → all type errors resolved
+
+## Next: run it
+* `npx expo run:android` (dev build — push + secure-store need native, not Expo Go)
+* Smoke test: sign up → create project → QuickAdd task → Today/Inbox → complete → theme toggle
 
 ## Completed
 * Expo app scaffolded (SDK 54, Expo Router, TypeScript) — Android-first, local dev build
-* AGENTS.md + CLAUDE.md recreated; app.json/package.json named "todu"
-* constants/colors.ts (light + dark Todu palette) + hooks/use-theme.ts
-* Front-end UI shell (runs in Expo Go, sample data):
-  - Tabs: Today / Inbox / Projects (starter tabs replaced)
-  - Components: PriorityBadge, TaskCard, ProjectCard, EmptyState
-  - Today (progress bar, overdue-first), Inbox (priority filter), Projects (counts)
-  - Task Detail route (app/task/[id].tsx) with description + complete toggle
-  - lib/types.ts + lib/sample-data.ts
-* Verified: tsc clean, expo-doctor 18/18, eslint clean
-* All context files created + enriched (data-model, theming, security, testing, etc.)
+* constants/colors.ts (light + dark) + hooks/use-theme.ts (now honors manual toggle)
+* Front-end UI shell + components (PriorityBadge, TaskCard, ProjectCard, EmptyState)
+* **Convex backend (convex/):**
+  - schema.ts (users, projects, tasks, reminders + all indexes per data-model)
+  - auth.config.ts (Clerk JWT), helpers.ts (requireUserId)
+  - users.ts (current/upsert/registerPushToken)
+  - projects.ts (list/listWithCounts/create/update/remove→tasks fall to Inbox)
+  - tasks.ts (list/today/byProject/get/create/update/setStatus/remove→cascades reminders)
+  - reminders.ts (create/cancel + internal sweep) + crons.ts (1-min sweep → Expo push)
+* **Auth:** ClerkProvider + ConvexProviderWithClerk + SecureStore token cache (lib/token-cache.ts);
+  (auth) sign-in + sign-up (email + code verify); route gating in app/_layout.tsx
+* **Live data:** all tabs + task detail now read/write Convex (sample-data no longer used)
+* **QuickAdd:** floating + button → @gorhom/bottom-sheet (title/priority/project) on all tabs
+* **Theme toggle:** Settings tab (system/light/dark, persisted via AsyncStorage) + sign out
+* **Push:** usePushNotifications (permission + Expo token → Convex); useBootstrapUser (upsert)
+* lib/dates.ts (TZ-correct today boundary + due labels)
+* .env.example + .env.local (placeholders)
 
 ## Coming Next
-* QuickAdd bottom sheet (floating + button) — create tasks
-* Convex init + schema.ts (tasks, projects, reminders) + queries/mutations
-* Clerk auth screens (login + signup) + provider wiring
-* Swap sample-data for live Convex queries
-* Theme toggle (light/dark/system) + NativeWind reconcile (feature_specs/01)
+* Run the 3 blocked steps above → then verify tsc/eslint clean on a device
 * Voice-to-text description (Gemini via Convex action) — see feature_specs/02
-* Push notifications setup
+* Polish: swipe-to-delete/complete on TaskCard, reminder UI in task detail, seed defaults
 
 ## Architectural Decisions Log
 * Convex chosen over Supabase — real-time out of the box, no REST boilerplate

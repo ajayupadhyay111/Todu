@@ -1,12 +1,13 @@
-import { useColorScheme } from '@/hooks/use-color-scheme';
-import { Colors, type ThemeMode } from '@/constants/colors';
+import { Colors } from '@/constants/colors';
+import { useThemeMode } from '@/hooks/use-theme-mode';
 
 /**
  * Resolves the active Todu palette (light/dark) plus shared accent colors.
+ * Honors the manual theme toggle (system/light/dark) via ThemeModeProvider.
  * Use this everywhere instead of hardcoding hex values.
  */
 export function useTheme() {
-  const scheme: ThemeMode = useColorScheme() === 'dark' ? 'dark' : 'light';
+  const { scheme } = useThemeMode();
   return {
     mode: scheme,
     ...Colors[scheme],
