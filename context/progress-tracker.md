@@ -40,7 +40,25 @@ This file updates after every session. Always read this first.
 * Voice-to-text description (Gemini via Convex action) — see feature_specs/02
 * Polish: swipe-to-delete/complete on TaskCard, reminder UI in task detail, seed defaults
 
+## Web App (PWA) — `web/`
+Separate full-stack Next.js PWA that mirrors the mobile UI. Standalone backend
+(does NOT share Convex data yet; mobile migration deferred).
+* Stack: Next.js 15 App Router + TS, Tailwind, **Neon Postgres + Drizzle**,
+  **Clerk** auth (same app), **Web Push (VAPID)**, **Serwist** PWA, Vercel host.
+* Built: DB schema/migration (projects/tasks/reminders/push_subscriptions),
+  server actions + RSC queries (owner-scoped by Clerk userId), all screens
+  (Today/Inbox/Projects/Task detail/Settings) responsive (side nav desktop /
+  bottom nav mobile), QuickAdd, theme toggle (next-themes), reminders UI.
+* Push: subscribe/unsubscribe routes + `/api/cron/sweep-reminders` (every-min
+  Vercel Cron) → web-push; SW push + notificationclick handlers in `app/sw.ts`.
+* PWA: `app/manifest.ts`, generated icons, `/offline` fallback.
+* Verified: `tsc --noEmit` clean, `next lint` clean, `next build` green (14 routes).
+* TODO before live: fill `web/.env.local` (Neon URL, Clerk keys, VAPID via
+  `npx web-push generate-vapid-keys`, CRON_SECRET), run `npm run db:migrate`.
+
 ## Architectural Decisions Log
+* Web: pure Next.js + Neon (not Convex) — runtime perf + standalone; chosen by dev
+* Web data is its own island until mobile is migrated off Convex (later pass)
 * Convex chosen over Supabase — real-time out of the box, no REST boilerplate
 * Expo Router chosen for file-based navigation (cleaner than React Navigation)
 * Light + dark mode (follows system, manual toggle) — decided to support both

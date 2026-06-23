@@ -1,0 +1,42 @@
+{
+  "name": "todu-web",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Todu — installable PWA mirroring the Todu mobile app. Next.js + Neon + Clerk + Web Push.",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "typecheck": "tsc --noEmit",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate",
+    "db:push": "drizzle-kit push",
+    "db:studio": "drizzle-kit studio"
+  },
+  "dependencies": {
+    "@clerk/nextjs": "^6.12.0",
+    "@neondatabase/serverless": "^0.10.4",
+    "drizzle-orm": "^0.38.3",
+    "next": "^15.3.0",
+    "next-themes": "^0.4.4",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "web-push": "^3.6.7"
+  },
+  "devDependencies": {
+    "@serwist/next": "^9.0.11",
+    "@types/node": "^22.10.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "@types/web-push": "^3.6.4",
+    "autoprefixer": "^10.4.20",
+    "drizzle-kit": "^0.30.1",
+    "eslint": "^9.17.0",
+    "eslint-config-next": "^15.3.0",
+    "postcss": "^8.4.49",
+    "serwist": "^9.0.11",
+    "tailwindcss": "^3.4.17",
+    "typescript": "^5.7.2"
+  }
+}
